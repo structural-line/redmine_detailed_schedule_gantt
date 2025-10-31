@@ -74,7 +74,7 @@ class CellProperties {
       // レンダーを設定する
       cellProperties.renderer = (instance, td, row, col, prop, value, cellProperties) => {
         td = this.setOmission(td); // 文字が行からはみ出す場合は省略表示する
-        td = this.setColor(td, rowData);
+        td = this.setBackGoundColor(td, rowData);
         if (isProjectRow || isMilestoneRow) {
           this.setNonDisplay(td, rowData);
         } else {
@@ -101,7 +101,7 @@ class CellProperties {
       // レンダーを設定する
       cellProperties.renderer = (instance, td, row, col, prop, value, cellProperties)  => {
         td = this.setOmission(td); // 文字が行からはみ出す場合は省略表示する
-        td = this.setColor(td, rowData);
+        td = this.setBackGoundColor(td, rowData);
         if (isProjectRow || isMilestoneRow) {
           this.setNonDisplay(td, rowData);
         } else {
@@ -136,7 +136,7 @@ class CellProperties {
         // セルの現在値(value)に一致する担当者を検索して取得
         const matchedUser = assignableUsers.find(user => String(user.id) === String(value));
         td = this.setOmission(td); // 文字が行からはみ出す場合は省略表示する
-        td = this.setColor(td, rowData);
+        td = this.setBackGoundColor(td, rowData);
         if (isProjectRow || isMilestoneRow) {
           this.setNonDisplay(td, rowData);
         } else {
@@ -164,7 +164,7 @@ class CellProperties {
       cellProperties.renderer = (instance, td, row, col, prop, value, cellProperties)  => {
         td.innerText = value;
         td = this.setOmission(td); // 文字が行からはみ出す場合は省略表示する
-        td = this.setColor(td, rowData);
+        td = this.setBackGoundColor(td, rowData);
         if (isProjectRow) {
           td.innerHTML = `<a href="/projects/${rowData.identifier}/settings" target="_blank">${value}</a>`;
           td.style.backgroundColor = '#e6f3ff';
@@ -191,7 +191,7 @@ class CellProperties {
       cellProperties.renderer = (instance, td, row, col, prop, value, cellProperties)  => {
         td.innerText = value;
         td = this.setOmission(td); // 文字が行からはみ出す場合は省略表示する
-        td = this.setColor(td, rowData);
+        td = this.setBackGoundColor(td, rowData);
         if (isProjectRow) {
           td.style.backgroundColor = '#e6f3ff';
           td.style.fontWeight = 'bold';
@@ -213,7 +213,7 @@ class CellProperties {
       // レンダーを設定する
       cellProperties.renderer = (instance, td, row, col, prop, value, cellProperties)  => {
         td.innerText = value || '-';
-        td = this.setColor(td, rowData);
+        td = this.setBackGoundColor(td, rowData);
         td.style.textAlign = 'center';
         if (isProjectRow || isMilestoneRow) {
           this.setNonDisplay(td, rowData);
@@ -231,7 +231,7 @@ class CellProperties {
 
       // レンダーを設定する
       cellProperties.renderer = (instance, td, row, col, prop, value, cellProperties)  => {
-        td = this.setColor(td, rowData);
+        td = this.setBackGoundColor(td, rowData);
         td.style.textAlign = 'center';
         if (isProjectRow || isMilestoneRow) {
           this.setNonDisplay(td, rowData);
@@ -246,7 +246,7 @@ class CellProperties {
     const scheduleDays = this.hotMain.propToCol('schedule_days');
     if (col == scheduleDays) {
       cellProperties.renderer = (instance, td, row, col, prop, value, cellProperties)  => {
-        td = this.setColor(td, rowData);
+        td = this.setBackGoundColor(td, rowData);
         td.style.textAlign = 'center';
         if (isProjectRow || isMilestoneRow) {
           this.setNonDisplay(td, rowData);
@@ -305,7 +305,7 @@ class CellProperties {
           td.style.backgroundColor = '#f0f0f0';
         }
 
-        td = this.setColor(td, rowData); //最後に背景色を上書きしている
+        td = this.setBackGoundColor(td, rowData); //最後に背景色を上書きしている
 
         if (value == undefined) {
           td.innerText = '';
@@ -548,7 +548,7 @@ class CellProperties {
   }
 
   // 色のスタイルをセットする
-  setColor(td, rowData) {
+  setBackGoundColor(td, rowData) {
     // if (rowData?.color_id === window.CONSTANTS.ROW_COLOR_NORMAL || rowData?.color_id == null) {
     //   td.style.backgroundColor = '';
     if (rowData?.color_id === window.CONSTANTS.ROW_COLOR_YELLOW) {
