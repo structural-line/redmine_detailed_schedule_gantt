@@ -1,0 +1,34 @@
+<%#
+  Copyright (c) 2025 Structural Line Incorporated
+  SPDX-License-Identifier: GPL-2.0-or-later
+  https://sl-inc.co.jp
+%>
+
+<%#  プロジェクト設定に追加した、開始日と期日と見積工数の編集フィールドと予定済工数の値を表示するフィールド%>
+
+<%# 開始日 %>
+<% if @project.safe_attribute? 'project_start_date' %>
+  <p><%= f.date_field :project_start_date, :label => l(:field_project_start_date) %></p>
+<% end %>
+
+<%# 期日 %>
+<% if @project.safe_attribute? 'end_date' %>
+  <p><%= f.date_field :end_date, :label => l(:field_project_end_date) %></p>
+<% end %>
+
+<%# 見積工数 %>
+<% if @project.safe_attribute? 'estimated_days' %>
+  <p>
+    <%= f.label :estimated_days, l(:field_estimated_days) %>
+    <%= f.number_field :estimated_days, step: 0.1, min: 0, style: 'width: 7em'%>
+    <span class="info" data-day-label="<%= l(:label_day) %>">
+      <%= l(:label_day) %>
+    </span>
+  </p>
+<% end %>
+
+<%# 予定済工数はこの画面では変更できないので表示のみ %>
+<p>
+  <%= f.label :schedule_days, l(:field_schedule_days) %>
+  <%= @project.schedule_days.present? ? gantt_format_days(@project.schedule_days) : l(:label_0day) %>
+</p>

@@ -1,0 +1,18 @@
+<!-- 
+  Copyright (c) 2025 Structural Line Incorporated
+  SPDX-License-Identifier: GPL-2.0-or-later
+  https://sl-inc.co.jp
+-->
+
+<!-- プラグイン設定 -->
+<p>
+  <%= label_tag 'settings_message', '画面読み込み時に表示する行数' %><br>
+  <%= text_field_tag 'settings[initial_rows]', @settings['initial_rows'], size: 6 %>
+</p>
+  <p>※ 最大行数をオーバーした場合はチケットのIDの大きいものから順に切り捨てられます </p>
+
+<p>
+  <%= label_tag 'settings_message', '遅延読み込み時に表示する最大行数' %><br>
+  <%= text_field_tag 'settings[max_rows]', @settings['max_rows'], size: 6 %>
+</p>
+  <p>※ 最大行数をオーバーした場合はチケットのIDの大きいものから順に切り捨てられます </p>

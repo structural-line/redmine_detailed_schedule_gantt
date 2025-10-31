@@ -1,0 +1,87 @@
+<!-- 
+  Copyright (c) 2025 Structural Line Incorporated
+  SPDX-License-Identifier: GPL-2.0-or-later
+  https://sl-inc.co.jp
+
+-->
+<script>
+  // issueのリストが入ったwindowオブジェクトを作成。中身はJSオブジェクトになっている
+  // [
+  //   {id: 1, subject: 'テストチケット1', project: 'テストプロジェクト', project_id: 1, tracker: 'トラッカー1', …}
+  //   {id: 2, subject: 'テストチケット2', project: 'テストプロジェクト', project_id: 1, tracker: 'トラッカー1', …}
+  // ]
+  window.issueArray = <%= raw(
+    @issues.map do |issue|
+      {
+        project: issue.project.try(:name),
+        project_id: issue.project_id,
+        id: issue.id,
+        lock_version: issue.lock_version,
+        category_id: issue.category_id,
+        category_name: issue.category.try(:name),
+        available_categories: issue.project ? issue.project.issue_categories.map { |c| 
+          { id: c.id, name: c.name } } : [],
+        assigned_to_id: issue.assigned_to_id,
+        assignable_users: issue.assignable_users,
+        subject: issue.subject,
+        description: issue.description,
+        estimated_days: issue.estimated_days,
+        schedule_days: issue.schedule_days,
+        check_days: issue.check_days,
+        external_link: issue.external_link,
+        daily_schedules: issue.issue_daily_schedules.each_with_object({}) { |r, h|
+          h[r.schedule_date.to_s] = r.man_days.to_s
+        },
+        tracker: issue.tracker.try(:name),
+        version_id: issue.fixed_version_id,
+        shared_version: issue.project ? issue.project.shared_versions.map { |v|
+          { id: v.id, name: v.name } } : [],
+        start_date: issue.start_date,
+        due_date: issue.due_date,
+        status: issue.status.try(:name),
+        done_ratio: issue.done_ratio,
+        priority: issue.priority.try(:name),
+        spent_hours: issue.spent_hours,
+      }
+    end.to_json
+  ) %>;
+
+  // 全ユーザーのIDと名前が入ったオブジェクトを作成（所属プロジェクトに関係なく取得）
+  // [
+  //    { id: 1, firstname: 'Redmine', lastname: 'Admin' },
+  //    { id: 2, firstname: 'ストラク', lastname: '太郎' },
+  // ]
+  window.allUsers = <%= raw(@all_users.to_json) %>;
+
+  // ユーザー毎の一日の合計工数が入ったオブジェクトを作成
+  // [
+  //    {id: 1, user_id: 1, schedule_date: '2025-10-15', total_man_days: '1.5'},
+  //    {id: 2, user_id: 1, schedule_date: '2025-10-11', total_man_days: '1.0'}
+  // ]
+  window.userDailySchedules = <%= raw(@user_daily_schedules.to_json) %>;
+
+  // projectsが複数系の場合は @gantt.issues の 各issueを見て割り当てられている全てのプロジェクトを取得できる
+  // [
+  //    { id: 47, name: 'テストプロジェクト', ... schedule_days: "0.0", status: 1 },
+  //    { id: 48, name: 'テストプロジェクトX', ... schedule_days: "0.0", status: 1 }
+  // ]
+  window.projects = <%= raw(@gantt.projects.to_json) %>;
+
+  // versionの情報が入ったオブジェクトを作成
+  //  [
+  //    {id: 1, project_id: 47, name: 'テストバージョン', description: '', effective_date: '2025-10-16', …}
+  //    {id: 2, project_id: 47, name: 'テスト機能', description: '', effective_date: null, …}
+  //  ]
+  window.versions = <%= raw(@versions.to_json) %>;
+
+  // 全てのプロジェクトを表示したいときに使うフラグ
+  window.isAllProjects = <%= raw(@is_all_projects.to_json) %>;
+  
+</script>
+
+<div class="gantt-spreadsheet-container">
+  <div class="gantt-spreadsheet-table-container">
+    <div id="gantt-handsontable-main"></div>
+    <div id="gantt-handsontable-footer"></div>
+  </div>
+</div>

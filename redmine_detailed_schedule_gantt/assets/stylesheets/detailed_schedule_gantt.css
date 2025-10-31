@@ -1,0 +1,104 @@
+/*
+Copyright (c) 2025 Structural Line Incorporated
+SPDX-License-Identifier: GPL-2.0-or-later 
+https://sl-inc.co.jp
+*/
+
+/* ----------ガントスプレ度シートの基本的な見た目---------- */
+.gantt-spreadsheet-container {
+  margin: 10px 0 20px;
+}
+
+.gantt-spreadsheet-table-container {
+  border: 1px solid #d0d7de;
+  border-radius: 0 0 6px 6px;
+  overflow: auto;
+}
+
+.ui-widget.ui-widget-content {
+  z-index: 1001 !important;
+}
+
+/* ガントスプレッドシートでHandsontableのソートアイコンを非表示にする */
+#gantt-handsontable th[role=columnheader]:not(.no-sort):after {
+  content: unset;
+}
+
+/* 1日の合計工数を表示する方のHandsontableの日付を表示する部分（nestedHeaders）は非表示 */
+#gantt-handsontable-footer .handsontable .htCore thead {
+  display: none;
+}
+
+/* 新しいチケット作成リンクのフォント */
+.new-ticket, 
+.new-version {
+  font-size: 0.8rem;
+  font-weight: 400;
+}
+
+/* 編集モード切替ボタン */
+/* 1日の合計工数の表示、非表示切替ボタン */
+#toggle-edit-mode,
+#toggle-manager-button {
+  margin-left: 10px; 
+  cursor: pointer;
+}
+
+/* 全プロジェクト表示時の、読み取り専用ボタン？ */
+.read-only-btn {
+  background-color: #e0e0e0;
+  color: #333;
+  border: 1px solid #999;
+  border-radius: 4px;
+  padding: 0.2rem 0.4rem;
+  font-size: 0.8rem;
+  margin-left: 0.5rem;
+}
+
+/* --- Handsontableのヘッダーにホバー時に表示されるソートインジケータを無効化 --- */
+.ht__sortIndicator,
+[class*="ht__sortIndicator"],
+[class*="ht__ascending"],
+[class*="ht__descending"],
+th:hover .ht__sortIndicator,
+th::after {
+  display: none !important;
+  content: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  transform: none !important;
+  position: static !important;
+  overflow: hidden !important;
+}
+
+/* 編集モード＋ローディングを一行にまとめる */
+.editmode-with-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+/* インジケータ本体 */
+#loading-indicator {
+  display: none; /* 初期は非表示 */
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #555;
+}
+
+/* 読み込み中のスピナー */
+#loading-indicator .spinner {
+  border: 2px solid #ccc;
+  border-top: 2px solid #007bff;
+  border-radius: 50%;
+  width: 14px;
+  height: 14px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }

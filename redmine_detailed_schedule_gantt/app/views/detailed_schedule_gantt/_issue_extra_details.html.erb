@@ -1,0 +1,22 @@
+<%#
+  Copyright (c) 2025 Structural Line Incorporated
+  SPDX-License-Identifier: GPL-2.0-or-later
+  https://sl-inc.co.jp
+%>
+
+<%# 見積工数と予定済工数を表示するフィールドを追加 %>
+
+<% issue = local_assigns[:issue] || @issue %>
+
+<div id="detailed-schedule-gantt-extra-attributes">
+  <%= issue_fields_rows do |rows| %>
+    <% est = issue&.estimated_days %>
+    <% sch = issue&.schedule_days  %>
+
+    <%# 見積工数 %>
+    <% rows.right l(:field_estimated_days), gantt_format_days(est), class: 'estimated-days' %>
+
+    <%# 予定済工数 %>
+    <% rows.right l(:field_schedule_days),  gantt_format_days(sch), class: 'schedule-days'  %>
+  <% end %>
+</div>

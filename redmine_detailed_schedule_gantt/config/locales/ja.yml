@@ -1,0 +1,19 @@
+# Copyright (c) 2025 Structural Line Incorporated
+# SPDX-License-Identifier: GPL-2.0-or-later
+# https://sl-inc.co.jp
+
+# 主にRubyのシンボルを日本語に置き換えるのに使用するファイル
+
+ja:
+  label_detailed_schedule_gantt: "小日程計画ガントチャート"
+  project_module_detailed_schedule_gantt: "小日程計画ガントチャート"
+  permission_view_detailed_schedule_gantt: "スプレッドシートの閲覧"
+  permission_update_detailed_schedule_gantt: "スプレッドシートの更新"
+  notice_spreadsheet_truncated: "スプレッドシートは %{max} 行で切り詰められました。"
+  field_estimated_days: 見積工数
+  field_schedule_days: 予定済工数
+  field_project_start_date: 開始日
+  field_version_start_date: 開始日
+  field_project_end_date: 期日
+  label_day: 人日
+  field_days: 人日

@@ -1,0 +1,71 @@
+<!-- 
+  Copyright (c) 2025 Structural Line Incorporated
+  SPDX-License-Identifier: GPL-2.0-or-later
+  https://sl-inc.co.jp
+-->
+
+<% @gantt.view = self %>
+
+<h2>
+  <%# タイトル %>
+  <%= l(:label_detailed_schedule_gantt)%>
+  
+  <div class="contextual new-version">
+    <%= link_to '新しいマイルストーンを作成', new_project_version_path(@project), target: '_blank',class: 'icon icon-add' %>
+  </div>
+  <div class ="contextual" style="margin: 0.5rem;"></div>
+  <div class="contextual new-ticket"> <%# スペーシング %>
+    <%= link_to '新しいチケットを作成', new_issue_path(project_id: @project.identifier), target: '_blank', class: 'icon icon-add' %>
+  </div>
+</h2>
+<%# フィルタ、オプション、表示する年月、カスタムクエリ を設定するフォーム%>
+<%= render partial: 'detailed_schedule_gantt/form' %>
+
+<%= error_messages_for 'query' %>
+
+<% if @query.valid? %>
+  <!-- スプレッドシートを描画 -->
+  <%= render partial: 'detailed_schedule_gantt/spreadsheet' %>
+
+  <%# ページネーション %>
+  <span class="pagination">
+    <ul class="pages">
+      <%# monthsに指定した数だけ表示する月を戻す %>
+      <li class="previous page">
+        <%= link_to("\xc2\xab " + l(:label_previous),
+                    { params: request.query_parameters.merge(@gantt.params_previous) },
+                    accesskey: accesskey(:previous)) %>
+      </li>
+      <%# monthsに指定した数だけ表示する月を進める %>
+      <li class="next page">
+        <%= link_to(l(:label_next) + " \xc2\xbb",
+                    { params: request.query_parameters.merge(@gantt.params_next) },
+                    accesskey: accesskey(:next)) %>
+      </li>
+    </ul>
+    <%# 担当者の1日の工数 表示 / 日表示 ボタン %>
+    <button id="toggle-manager-button" type="button">
+      <span id="manager-button-status">編集モード</span>
+    </button>
+  </span>
+  <p>
+    このスプレッドシートに表示される最大行数は
+    <%= @max_rows %>行です。
+    <%= link_to "プラグインの設定画面", "/settings/plugin/redmine_detailed_schedule_gantt" %>
+    から変更できます。
+  </p> 
+  <% end %>
+
+<%# サイドバー %>
+<% content_for :sidebar do %>
+  <%= render partial: 'issues/sidebar' %>
+<% end %>
+
+<%# タブに表示するタイトル %>
+<% html_title(l(:label_detailed_schedule_gantt)) -%>
+
+<% content_for :header_tags do %>
+  <%= render 'detailed_schedule_gantt/header_assets' %>
+<% end %>
+
+<%= context_menu %>

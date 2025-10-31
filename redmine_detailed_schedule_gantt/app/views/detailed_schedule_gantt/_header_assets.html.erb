@@ -1,0 +1,47 @@
+<!-- 
+  Copyright (c) 2025 Structural Line Incorporated
+  SPDX-License-Identifier: GPL-2.0-or-later
+  https://sl-inc.co.jp
+-->
+
+<%# HandsontableのCSSを読み込む %>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable@14.4.0/dist/handsontable.full.min.css">
+<%# HandsontableのJSを読み込む %>
+<script src="https://cdn.jsdelivr.net/npm/handsontable@14.4.0/dist/handsontable.full.min.js"></script>
+<%# プラグインのCSSを読み込む %>
+<%= stylesheet_link_tag 'detailed_schedule_gantt', plugin: 'redmine_detailed_schedule_gantt' %>
+<!-- スプレッドシート用アセット（常時読込） -->
+<%= javascript_include_tag 'factory',                     plugin: 'redmine_detailed_schedule_gantt' %>
+
+<%= javascript_include_tag 'create_gantt_spreadsheet/column_configurator',      plugin: 'redmine_detailed_schedule_gantt' %>
+<%= javascript_include_tag 'create_gantt_spreadsheet/column_widths_manager',    plugin: 'redmine_detailed_schedule_gantt' %>
+<%= javascript_include_tag 'create_gantt_spreadsheet/create_handsontable',       plugin: 'redmine_detailed_schedule_gantt' %>
+<%= javascript_include_tag 'create_gantt_spreadsheet/header_generator',         plugin: 'redmine_detailed_schedule_gantt' %>
+<%= javascript_include_tag 'create_gantt_spreadsheet/milestone_rows_generator',        plugin: 'redmine_detailed_schedule_gantt' %>
+<%= javascript_include_tag 'create_gantt_spreadsheet/project_control_rows_generator',        plugin: 'redmine_detailed_schedule_gantt' %>
+<%= javascript_include_tag 'create_gantt_spreadsheet/user_total_days_generator',        plugin: 'redmine_detailed_schedule_gantt' %>
+
+<%= javascript_include_tag 'add_setting/cell_properties',        plugin: 'redmine_detailed_schedule_gantt' %>
+<%= javascript_include_tag 'add_setting/drag_handler',        plugin: 'redmine_detailed_schedule_gantt' %>
+<%= javascript_include_tag 'add_setting/edit_mode_manager',        plugin: 'redmine_detailed_schedule_gantt' %>
+<%= javascript_include_tag 'add_setting/issues_save_handler',        plugin: 'redmine_detailed_schedule_gantt' %>
+<%= javascript_include_tag 'add_setting/projects_save_handler',        plugin: 'redmine_detailed_schedule_gantt' %>
+<%= javascript_include_tag 'add_setting/sort_number_updater',        plugin: 'redmine_detailed_schedule_gantt' %>
+<%= javascript_include_tag 'add_setting/visuable_manager',        plugin: 'redmine_detailed_schedule_gantt' %>
+
+<%= javascript_include_tag 'add_setting/edit/change_row_color',            plugin: 'redmine_detailed_schedule_gantt' %>
+<%= javascript_include_tag 'add_setting/edit/paste_handler',            plugin: 'redmine_detailed_schedule_gantt' %>
+<%= javascript_include_tag 'add_setting/edit/row_deleter',              plugin: 'redmine_detailed_schedule_gantt' %>
+<%= javascript_include_tag 'add_setting/edit/row_inserter',             plugin: 'redmine_detailed_schedule_gantt' %>
+<%= javascript_include_tag 'add_setting/edit/row_copier',            plugin: 'redmine_detailed_schedule_gantt' %>
+<%= javascript_include_tag 'add_setting/edit/undo_handler',            plugin: 'redmine_detailed_schedule_gantt' %>
+
+
+<%= javascript_include_tag 'util/clipboard_checker',        plugin: 'redmine_detailed_schedule_gantt' %>
+<%= javascript_include_tag 'util/constants',                plugin: 'redmine_detailed_schedule_gantt' %>
+<%= javascript_include_tag 'util/data_transformer',         plugin: 'redmine_detailed_schedule_gantt' %>
+<%= javascript_include_tag 'util/day_keys_generator',       plugin: 'redmine_detailed_schedule_gantt' %>
+<%= javascript_include_tag 'util/holiday_checker',          plugin: 'redmine_detailed_schedule_gantt' %>
+<%= javascript_include_tag 'util/reload_manager',       plugin: 'redmine_detailed_schedule_gantt' %>
+<%= javascript_include_tag 'util/send_request',       plugin: 'redmine_detailed_schedule_gantt' %>
+<%= javascript_include_tag 'util/today_checker',            plugin: 'redmine_detailed_schedule_gantt' %>

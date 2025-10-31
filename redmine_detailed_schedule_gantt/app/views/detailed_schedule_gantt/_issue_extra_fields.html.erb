@@ -1,0 +1,28 @@
+<%#
+  Copyright (c) 2025 Structural Line Incorporated
+  SPDX-License-Identifier: GPL-2.0-or-later
+  https://sl-inc.co.jp
+%>
+
+<%# チケットに追加した、見積工数の編集フィールドと予定済工数の値を表示するフィールド %>
+<% f = local_assigns[:f] %>
+
+<div class="splitcontent">
+  <%# 右寄せにするためにsplitcontentleftを空で作成 %>
+	<div class="splitcontentleft"></div>
+	<div class="splitcontentright">
+    <%# 見積工数 %>
+		<p>
+      <%= f.label :estimated_days, l(:field_estimated_days) %>
+      <%= f.number_field :estimated_days, step: 0.01, min: 0, style: 'width:7em' %>
+      <span class="units">人日</span>
+		</p>
+
+    <%# 予定済工数 %>
+		<p>
+		  <%= f.label :schedule_days, l(:field_schedule_days) %>
+      <span class="readonly-value"><%= gantt_format_days(issue&.schedule_days) %></span>
+      <%= f.hidden_field :schedule_days, value: issue&.schedule_days %>
+		</p>
+	</div>
+</div>
