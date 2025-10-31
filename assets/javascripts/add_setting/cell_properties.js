@@ -292,7 +292,7 @@ class CellProperties {
       }
       cellProperties.renderer = (instance, td, row, col, prop, value, cellProperties)  => {
         // 値が1以上なら赤
-        if (value >= 1.0) {
+        if (value > 1.0) {
           td.style.backgroundColor = '#ff9a9aff';
           // 本日列は水色
         } else if (isToday) {
@@ -478,7 +478,7 @@ class CellProperties {
 
       // レンダーを設定する
       cellProperties.renderer = (instance, td, row, col, prop, value, cellProperties)  => {
-        if (value >= 1.0) {
+        if (value > 1.0) {
           td.style.backgroundColor = '#ff9a9aff';
         // 本日列は水色
         } else if (isToday) {
