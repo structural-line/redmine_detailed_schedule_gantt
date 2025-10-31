@@ -45,7 +45,6 @@ class ChangeRowColor {
       lock_versions: lockVersions,
       color_id: color_id,
     };
-console.log(payload)
     try {
       const data = await this.sendRequest.send(payload);
       if (data.ok) console.log('色が変わったチケットの情報 data.results：', data.results);

@@ -423,63 +423,69 @@ class DetailedScheduleGanttController < ApplicationController
 
   # 行の色を変更するAPI
   def change_row_color
-    issue_ids = params[:issue_ids]
-    lock_versions = params[:lock_versions]
-    color_id = params[:color_id]
-    
-    issues = Issue.where(id: issue_ids)
+    issue_ids     = Array(params[:issue_ids]).map(&:to_i)
+    lock_versions = Array(params[:lock_versions]).map(&:to_i)
+    color_id      = params[:color_id].to_i
 
-    if issues.blank?
-      return render json: { ok: false, error: 'Not found', message: "チケットが見つかりませんでした。ページを再読み込みして確認してください" }, status: 404
+    if issue_ids.size != lock_versions.size
+      return render json: { ok: false, error: 'bad_request',
+                            message: 'issue_id と lock_version の件数が一致しません' }, status: 400
+    end
+
+    # 取得結果を id=>Issue のハッシュにして順序に依存しない参照にする
+    issues_by_id = Issue.where(id: issue_ids).index_by(&:id)
+
+    # 見つからないIDがあれば早期リターン
+    missing = issue_ids - issues_by_id.keys
+    if missing.any?
+      return render json: { ok: false, error: 'Not found',
+                            message: "存在しないチケットがあります: #{missing.join(', ')}" }, status: 404
     end
 
     results = []
-    errors  = []
-    index = 0
     rollback_reason = nil
 
     ActiveRecord::Base.transaction do
-      issues.each do |issue|
+      issue_ids.each_with_index do |iid, idx|
+        issue = issues_by_id[iid]
+
         unless issue.editable?(User.current)
           rollback_reason = { error: 'Forbidden', message: '更新権限がありません', status: 403 }
           raise ActiveRecord::Rollback
         end
 
-        # color_id と lock_version を更新
-        issue.safe_attributes = {
-          color_id: color_id,
-          lock_version: lock_versions[index]
-        }
-        index += 1
+        # 変更しない行はスキップ
+        next if issue.color_id.to_i == color_id
+
+        issue.lock_version = lock_versions[idx]
+        issue.safe_attributes = { color_id: color_id }
 
         if issue.save
           results << { id: issue.id, color_id: issue.color_id, lock_version: issue.lock_version }
         else
-          rollback_reason = { error: 'ValidationFailed', message: issue.errors.full_messages.join(', '), status: 422 }
+          rollback_reason = { error: 'ValidationFailed',
+                              message: issue.errors.full_messages.join(', '), status: 422 }
           raise ActiveRecord::Rollback
         end
       end
-    rescue ActiveRecord::StaleObjectError => e
-      rollback_reason = { error: 'stale_object', message: 'ただいま編集したデータについて他のユーザーが先に更新していたため、あなたの変更を保存できませんでした。ページを再読み込みして、再度編集してください。', status: 409 }
+    rescue ActiveRecord::StaleObjectError
+      rollback_reason = { error: 'stale_object',
+                          message: 'ただいま編集したデータについて他のユーザーが先に更新していたため、あなたの変更を保存できませんでした。ページを再読み込みして、再度編集してください。', status: 409 }
       raise ActiveRecord::Rollback
     rescue => e
       rollback_reason = { error: 'transaction_failed', message: e.message, status: 500 }
       raise ActiveRecord::Rollback
     end
 
-    # トランザクション終了後にエラーが発生していればエラーメッセージを返す
     if rollback_reason
       render json: rollback_reason.merge(ok: false), status: rollback_reason[:status]
       return
     end
 
-    # 成功時
     GanttLatestUpdate.touch_for(@project.id)
     GanttLatestUpdate.touch_for(nil)
-
     render json: { ok: true, results: results }
   end
-
 
   private
 
