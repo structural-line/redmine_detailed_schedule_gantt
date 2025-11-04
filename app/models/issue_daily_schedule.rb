@@ -19,7 +19,8 @@ class IssueDailySchedule < ApplicationRecord
             numericality: {
               greater_than_or_equal_to: 0,
               less_than_or_equal_to: MAX_MAN_DAYS
-            }
+            },
+            allow_nil: true
 
   # DBのdefault(0)があるが、nilで渡された場合に備えて丸めも実施
   before_validation :normalize_man_days
@@ -32,11 +33,26 @@ class IssueDailySchedule < ApplicationRecord
   private
 
   def normalize_man_days
-    # nil → 0、桁あふれ/マイナス防止、少数2桁に丸め
-    self.man_days = 0 if man_days.nil?
+    # 空文字を nil に変換
+    if man_days.is_a?(String)
+      if man_days.strip.empty?
+        self.man_days = nil
+      end
+    end
+
+    # nil の場合はここで処理を終える
+    if man_days.nil?
+      return
+    end
+
+    # 数値変換と丸め処理
     self.man_days = man_days.to_d.round(2)
-    self.man_days = 0 if man_days.negative?
-    self.man_days = MAX_MAN_DAYS if man_days > MAX_MAN_DAYS
+
+    if man_days.negative?
+      self.man_days = 0
+    elsif man_days > MAX_MAN_DAYS
+      self.man_days = MAX_MAN_DAYS
+    end
   end
 
   # 1日の合計工数を更新する

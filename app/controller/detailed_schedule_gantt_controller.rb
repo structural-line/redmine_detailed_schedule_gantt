@@ -55,12 +55,10 @@ class DetailedScheduleGanttController < ApplicationController
     # 日次工数の変更は data_attrs に入れてその他の変更は normal_attrs に入れる
     date_attrs   = {}
     normal_attrs = {}
+
+    # 日時工数とそれ以外で保存するテーブルが違うため分ける
     attrs.each do |k, v|
       if /\A\d{4}-\d{2}-\d{2}\z/.match?(k)
-        # 日次工数セルが空欄だった場合は0に変換する
-        if v == ''
-          v= 0
-        end  
         date_attrs[k] = v
       else
         normal_attrs[k] = v
