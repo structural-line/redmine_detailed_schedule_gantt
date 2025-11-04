@@ -109,6 +109,7 @@ class CreateHandsontable {
       manualColumnMove: false, // 列はドラッグアンドドロップで移動不可
       manualColumnResize: true, // 列幅をドラッグアンドドロップで変更可能
       filters: false, // フィルタ機能はオフRedmineのフィルタを使う
+      undo: false, // HandsontableのUndo機能は無効にする
       dropdownMenu: false, // ドロップダウンメニューは非表示
       hiddenColumns: {
         columns: [
