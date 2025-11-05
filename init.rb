@@ -35,7 +35,7 @@ Redmine::Plugin.register :redmine_detailed_schedule_gantt do
   name        '小日程計画が管理できるガントチャート'
   author      'ストラクチュアルライン株式会社'
   description '担当者ごとに小日程計画を作成でき、工数を集計できます'
-  version     '1.0.0'
+  version     '1.0.1'
   requires_redmine version_or_higher: '5.0.0'
 
   # プロジェクトメニュータブの権限を定義
