@@ -143,22 +143,23 @@ class ReloadManager {
 
   // time秒おきに更新日時を確認して更新されていればスプレッドシートを更新する
   async autoReload(time) {
-  let current = await this.getLatestUpdateTimeStamp(); // 最終更新日を取得する
+    let current = await this.getLatestUpdateTimeStamp(); // 最終更新日を取得する
 
-  const checkUpdate = async () => {
-    const timeStamp = await this.getLatestUpdateTimeStamp();
-    if (current !== timeStamp) {
-      console.log("更新を検知したので再レンダリングします")
-      this.reload();
-      current = timeStamp;
-    }
-    // 処理が終わってから次のタイマーをセット
+    const checkUpdate = async () => {
+      const timeStamp = await this.getLatestUpdateTimeStamp();
+      if (current !== timeStamp) {
+        console.log("更新を検知したので再レンダリングします")
+        this.reload();
+        current = timeStamp;
+      }
+      // 処理が終わってから次のタイマーをセット
+      setTimeout(checkUpdate, time * 1000);
+    };
+
+    // 最初の呼び出し
     setTimeout(checkUpdate, time * 1000);
-  };
-
-  // 最初の呼び出し
-  setTimeout(checkUpdate, time * 1000);
-}
+  }
+  
   /**
    * @description プロジェクトの最終更新日時を取得する
    * @returns タイムスタンプ
