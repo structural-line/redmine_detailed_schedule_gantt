@@ -212,7 +212,7 @@ class CellProperties {
 
       // レンダーを設定する
       cellProperties.renderer = (instance, td, row, col, prop, value, cellProperties)  => {
-        td.innerText = value || '-';
+        td.innerText = value || 0;
         td = this.setBackGoundColor(td, rowData);
         td.style.textAlign = 'center';
         if (isProjectRow || isMilestoneRow) {
