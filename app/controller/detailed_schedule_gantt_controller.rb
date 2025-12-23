@@ -98,9 +98,6 @@ class DetailedScheduleGanttController < ApplicationController
               results[k] = { ok: true, value: (issue.respond_to?(k) ? issue.public_send(k) : v), note: 'no change' }
             end
           end
-        # else
-        #   # 更新が issue_daily_schedule テーブルのみの場合でもlock_versionをインクリメントさせるため
-        #   issue.touch 
         end
 
         # issue_daily_scheduleテーブルの一括更新
