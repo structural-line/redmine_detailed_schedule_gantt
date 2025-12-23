@@ -34,7 +34,7 @@ class DetailedScheduleGanttController < ApplicationController
   end
   
   # セルの変更を行単位で受け取り更新するアクション
-  # 行単位にした理由は、楽観ロックを管理するバージョンをチケットごとに管理しているため
+  # 行単位で楽観ロックを行う。ただし、日付セルの変更は対象外
   def bulk_update_issue
     issue = Issue.find_by(id: params[:id])
     unless issue
@@ -98,9 +98,6 @@ class DetailedScheduleGanttController < ApplicationController
               results[k] = { ok: true, value: (issue.respond_to?(k) ? issue.public_send(k) : v), note: 'no change' }
             end
           end
-        else
-          # 更新が issue_daily_schedule テーブルのみの場合でもlock_versionをインクリメントさせるため
-          issue.touch 
         end
 
         # issue_daily_scheduleテーブルの一括更新

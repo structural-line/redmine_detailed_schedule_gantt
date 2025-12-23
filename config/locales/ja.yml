@@ -5,10 +5,11 @@
 # 主にRubyのシンボルを日本語に置き換えるのに使用するファイル
 
 ja:
-  label_detailed_schedule_gantt: "小日程計画ガントチャート"
-  project_module_detailed_schedule_gantt: "小日程計画ガントチャート"
+  label_detailed_schedule_gantt: "SHOGA"
+  project_module_detailed_schedule_gantt: "SHOGA（小日程計画ガントチャート）"
   permission_view_detailed_schedule_gantt: "スプレッドシートの閲覧"
   permission_update_detailed_schedule_gantt: "スプレッドシートの更新"
+  view_detailed_schedule_gantt_global: "全てのプロジェクトをSHOGA（小日程計画ガントチャート）で閲覧"
   notice_spreadsheet_truncated: "スプレッドシートは %{max} 行で切り詰められました。"
   field_estimated_days: 見積工数
   field_schedule_days: 予定済工数
