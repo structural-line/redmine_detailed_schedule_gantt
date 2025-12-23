@@ -104,26 +104,34 @@ class IssuesSaveHandler {
         try {
           const data = await this.sendRequest.send(payload);
 
-          // 変更をまとめて描画
+          // 日付セルの正規表現
+          const isDateKey = (k) => /^\d{4}-\d{2}-\d{2}$/.test(k);
+          
+          // サーバーから取得した日付セル以外のセルをまとめて更新する
           this.hotMain.batch(() => {
-            // サーバーから受け取った変更内容を反映
-            if (data?.results) {
-              for (const [k, r] of Object.entries(data.results)) {
-                if (r && r.ok) this.hotMain.setDataAtRowProp(row, k, r.value, 'server calculate value');
-              }
+            if (!data?.results) return;
+
+            const updates = [];
+
+            for (const [k, r] of Object.entries(data.results)) {
+              if (!r?.ok) continue;
+              if (isDateKey(k)) continue;
+
+              updates.push([row, k, r.value]);
+            }
+
+            if (updates.length) {
+              this.hotMain.setDataAtRowProp(updates, 'server calculate value');
             }
           });
 
           console.log('変更された値 data.results:', data.results);
-          // 画面を再描画。
-          // TODO : 1日の合計工数行部分のみ再描画したい
-          this.reloadManager.reload();
-
+          
         // HTTPステータスがエラーステータスだった場合は postJSON 内で throw してここに来る
         } catch (err) {
           console.error('bulk_update_issue アクション 失敗:', err);
           let message = `更新に失敗しました (status: ${err.status ?? 'N/A'})`;
-
+          
           if (err.errors && typeof err.errors === 'object') {
             // { field: [msg, ...], ... } を1行テキストへ変換する
             const lines = [];
@@ -137,10 +145,12 @@ class IssuesSaveHandler {
           if (err.error) message += `\n 概要：${err.error}`;
           if (err.message) message += `\n 詳細：${err.message}`;
           if (err.ignored_by_permission?.length) message += `\n\n権限外により無視された項目: ${err.ignored_by_permission.join(', ')}`;
-
+        
           alert(message);
         }  
       }
+      // 1日の合計工数行を再描画
+      this.reloadManager.reloadDailySchedule();
     })();
   }
 

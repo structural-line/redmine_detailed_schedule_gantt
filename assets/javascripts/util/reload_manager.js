@@ -30,6 +30,61 @@ class ReloadManager {
     if (this.loadingIndicator) this.loadingIndicator.style.display = 'none';
   }
 
+  // 1日の合計工数行をサーバーから取得して更新する
+  async reloadDailySchedule() {
+    this.showLoading();
+    let data = { issues: [], user_daily_schedules: [], projects: [] };
+    let res = null; // Railsから取得した行データを入れる配列
+
+    try {
+      // プロジェクトがセットされてなければ全てのプロジェクトのissueを取得する
+      if (window.isAllProjects) {
+        res = await fetch('get_data_all_projects')
+      } else {
+        res = await fetch('detailed_schedule_gantt/get_data');
+      }
+
+      if (res.ok) {
+        data = await res.json();
+      } else {
+        console.error('fetch error:', res.status, res.statusText);
+      }
+    } catch (e) {
+      console.error('最新データの取得中にエラーが発生しました:', e);
+    }
+
+    // ----- 1日の合計工数行を作成-----
+    // 全てのユーザーのひな型となる行データを作成
+    const tallyRows = (window.allUsers || []).map(user => ({
+      id: null,
+      lock_version: null,
+      category_id: '-',
+      version_id: '-',
+      assigned_to_id: user.id,
+      subject: '工数管理',
+      description: '1日の合計工数',
+      done_ratio: '-',
+      is_tally_row: true,
+      estimated_days: '-',
+      schedule_days: '-',
+      check_days: '-'
+    }));
+
+    // ユーザー毎に1日の合計工数をtallyRowsにマージする
+    data.user_daily_schedules.forEach(uds => {
+      const row = tallyRows.find(r => r.assigned_to_id === uds.user_id);
+      if (!row) return;
+        row[uds.schedule_date] = uds.total_man_days;
+    });
+
+    // 1日の合計工数行を更新する 
+    this.hotFooter.updateSettings({
+      data: tallyRows
+    })
+    this.hotFooter.render();
+    this.hideLoading();
+  }
+
   // 最新のissueと1日の合計工数を取得してHandsontableのセルの値を更新する
   async reload() {
     this.showLoading();
@@ -159,7 +214,7 @@ class ReloadManager {
     // 最初の呼び出し
     setTimeout(checkUpdate, time * 1000);
   }
-  
+
   /**
    * @description プロジェクトの最終更新日時を取得する
    * @returns タイムスタンプ
