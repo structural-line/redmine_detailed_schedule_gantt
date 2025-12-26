@@ -102,6 +102,7 @@ class CreateHandsontable {
       readOnly: true,
       fixedColumnsLeft: window.CONSTANTS.COL_FIRST_DAY, // 静的カラムは左側に固定表示する。右スクロールしても固定される
       colWidths: colmnWidth,                  
+      rowHeights: 22,
       licenseKey: 'non-commercial-and-evaluation',
       contextMenu: false, // 画面ロード時は右クリックメニューを無効にする
       manualRowMove: true, // 行をドラッグアンドドロップで移動可能
