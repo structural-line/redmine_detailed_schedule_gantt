@@ -123,6 +123,9 @@ class DetailedScheduleGanttController < ApplicationController
         GanttLatestUpdate.touch_for(@project.id, user_id: User.current.id) 
         GanttLatestUpdate.touch_for(nil, user_id: User.current.id)
       end
+      
+      # 楽観ロックバージョンを更新
+      results["lock_version"] = { ok: true, value: issue.lock_version }
 
       # 権限で無視されたキーは errors に載せる
       ignored_by_permission.each { |k| errors[k] = ['assignment ignored by permissions'] } if ignored_by_permission.any?
