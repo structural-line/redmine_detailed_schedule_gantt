@@ -482,8 +482,8 @@ class DetailedScheduleGanttController < ApplicationController
       return
     end
 
-    GanttLatestUpdate.touch_for(@project.id)
-    GanttLatestUpdate.touch_for(nil)
+    GanttLatestUpdate.touch_for(@project.id, user_id: User.current.id)
+    GanttLatestUpdate.touch_for(nil, user_id: User.current.id)
     render json: { ok: true, results: results }
   end
 
