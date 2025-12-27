@@ -10,7 +10,6 @@
  * @param {Handsontable} hotMain Handsontableのチケット行部分
  * @param {Handsontable} hotFooter　Handsontableの1日の合計工数行部分
  * @param {DataTransformer} dataTransformer Handsontableの行データに必要な項目のみを取り出すクラス
- * @TODO セル更新後に使う、1日の合計工数行だけを更新する機能があるともっと速度が上がる get_dataじゃなくてget_tally_dataなど
  */
 class ReloadManager {
   constructor(hotMain, hotFooter, projectControlRowsGenerator, milestoneRowsGenerator) {
@@ -31,7 +30,7 @@ class ReloadManager {
   }
 
   // 1日の合計工数行をサーバーから取得して更新する
-  async reloadDailySchedule() {
+  async reloadTallyRows() {
     this.showLoading();
     let data = { issues: [], user_daily_schedules: [], projects: [] };
     let res = null; // Railsから取得した行データを入れる配列
@@ -90,6 +89,7 @@ class ReloadManager {
     this.showLoading();
     let data = { issues: [], user_daily_schedules: [], projects: [] };
     let res = null; // Railsから取得した行データを入れる配列
+
     try {
       // プロジェクトがセットされてなければ全てのプロジェクトのissueを取得する
       if (window.isAllProjects) {
@@ -196,16 +196,19 @@ class ReloadManager {
     this.hideLoading();
   }
 
-  // time秒おきに更新日時を確認して更新されていればスプレッドシートを更新する
+  // time秒おきに更新情報を確認して更新されていればスプレッドシートを更新する
   async autoReload(time) {
-    let current = await this.getLatestUpdateTimeStamp(); // 最終更新日を取得する
+    let userId = window.UserId.id;
+    const result = await this.getLatestUpdate();
+    let lastUpdateDate = result?.last_update_date;
 
     const checkUpdate = async () => {
-      const timeStamp = await this.getLatestUpdateTimeStamp();
-      if (current !== timeStamp) {
+      const result = await this.getLatestUpdate();
+      // 最終更新者が自分ではない場合
+      if (userId !== result.last_update_user_id && lastUpdateDate != result?.last_update_date) {
         console.log("更新を検知したので再レンダリングします")
         this.reload();
-        current = timeStamp;
+        lastUpdateDate = result?.last_update_date;
       }
       // 処理が終わってから次のタイマーをセット
       setTimeout(checkUpdate, time * 1000);
@@ -216,13 +219,13 @@ class ReloadManager {
   }
 
   /**
-   * @description プロジェクトの最終更新日時を取得する
-   * @returns タイムスタンプ
+   * @description プロジェクトの最終更新情報を取得する
+   * @returns プロジェクトの最終更新情報
    */
-  async getLatestUpdateTimeStamp() {
+  async getLatestUpdate() {
     try {
       let res;
-      // 全プロジェクトをチェックしたいか個別のプロジェクトをちえっくしたいかで使うAPIを分岐する
+      // 全プロジェクトをチェックしたいか個別のプロジェクトをチェックしたいかで使うAPIを分岐する
       if (window.isAllProjects) {
         res = await fetch('get_latest_update');
       } else {

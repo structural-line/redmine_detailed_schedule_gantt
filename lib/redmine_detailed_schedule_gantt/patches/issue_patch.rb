@@ -103,8 +103,8 @@ module RedmineDetailedScheduleGantt
 
 					# スプレッドシートの最終更新日時を更新する
 					def update_gantt_latest_update
-						GanttLatestUpdate.touch_for(project.id) 
-						GanttLatestUpdate.touch_for(nil)
+						GanttLatestUpdate.touch_for(project.id, user_id: User.current.id) 
+						GanttLatestUpdate.touch_for(nil, user_id: User.current.id)
 					end
 				end
       end

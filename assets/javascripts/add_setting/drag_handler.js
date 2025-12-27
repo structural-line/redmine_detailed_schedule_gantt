@@ -53,6 +53,20 @@ class DragHandler {
       td.style.opacity = '0.9';
       td.style.filter = 'grayscale(20%)';
 
+      // 省略表示用のCSSを適用
+      td.style.whiteSpace = 'nowrap';
+      td.style.overflow = 'hidden';
+      td.style.textOverflow = 'ellipsis';
+
+      // 内側要素が独自に white-space/overflow を持っていると ellipsis が効かない場合があるので親(td)の指定を継承させる
+      const inner = td.firstElementChild;
+      if (inner) {
+        inner.title = td.innerText;
+        inner.style.whiteSpace = 'inherit';
+        inner.style.overflow = 'inherit';
+        inner.style.textOverflow = 'inherit';
+      }
+
       // ドラッグハンドルを追加
       this.addDragHandles(td, row, col, instance.getSourceDataAtRow(row));
     }

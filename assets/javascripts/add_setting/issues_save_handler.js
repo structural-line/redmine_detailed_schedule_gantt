@@ -150,7 +150,7 @@ class IssuesSaveHandler {
         }  
       }
       // 1日の合計工数行を再描画
-      this.reloadManager.reloadDailySchedule();
+      this.reloadManager.reloadTallyRows();
     })();
   }
 
