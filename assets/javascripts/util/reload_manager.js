@@ -10,7 +10,6 @@
  * @param {Handsontable} hotMain Handsontableのチケット行部分
  * @param {Handsontable} hotFooter　Handsontableの1日の合計工数行部分
  * @param {DataTransformer} dataTransformer Handsontableの行データに必要な項目のみを取り出すクラス
- * @TODO セル更新後に使う、1日の合計工数行だけを更新する機能があるともっと速度が上がる get_dataじゃなくてget_tally_dataなど
  */
 class ReloadManager {
   constructor(hotMain, hotFooter, projectControlRowsGenerator, milestoneRowsGenerator) {
@@ -31,7 +30,7 @@ class ReloadManager {
   }
 
   // 1日の合計工数行をサーバーから取得して更新する
-  async reloadDailySchedule() {
+  async reloadTallyRows() {
     this.showLoading();
     let data = { issues: [], user_daily_schedules: [], projects: [] };
     let res = null; // Railsから取得した行データを入れる配列
