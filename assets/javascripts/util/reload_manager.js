@@ -221,7 +221,7 @@ class ReloadManager {
   async getLatestUpdateTimeStamp() {
     try {
       let res;
-      // 全プロジェクトをチェックしたいか個別のプロジェクトをちえっくしたいかで使うAPIを分岐する
+      // 全プロジェクトをチェックしたいか個別のプロジェクトをチェックしたいかで使うAPIを分岐する
       if (window.isAllProjects) {
         res = await fetch('get_latest_update');
       } else {
