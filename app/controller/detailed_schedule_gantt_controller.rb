@@ -22,6 +22,7 @@ class DetailedScheduleGanttController < ApplicationController
     setup_gantt_common
     @gantt.project = @Project
     @is_all_projects = false
+    @user_id = User.current
     render_show_view("show")
   end
 
@@ -30,6 +31,7 @@ class DetailedScheduleGanttController < ApplicationController
     setup_gantt_common
     @gantt.instance_variable_set(:@projects, Project.active.order(:id).to_a)
     @is_all_projects = true
+    @user_id = User.current
     render_show_view("show_all_projects")
   end
   
@@ -118,8 +120,8 @@ class DetailedScheduleGanttController < ApplicationController
           end
         end
         # オート楽観ロックチェック用にプロジェクトの最終更新日時を更新する
-        GanttLatestUpdate.touch_for(@project.id) 
-        GanttLatestUpdate.touch_for(nil)
+        GanttLatestUpdate.touch_for(@project.id, user_id: User.current.id) 
+        GanttLatestUpdate.touch_for(nil, user_id: User.current.id)
       end
 
       # 権限で無視されたキーは errors に載せる
@@ -376,8 +378,8 @@ class DetailedScheduleGanttController < ApplicationController
         nil
       end
 
-    time_stamp = GanttLatestUpdate.last_for(project_id)
-    render json: { ok: true, results: time_stamp }
+    latest = GanttLatestUpdate.last_for(project_id)
+    render json: { ok: true, results: latest }
   end
 
   # チケットのソートナンバーを更新する

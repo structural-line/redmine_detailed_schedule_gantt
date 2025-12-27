@@ -76,6 +76,9 @@
 
   // 全てのプロジェクトを表示したいときに使うフラグ
   window.isAllProjects = <%= raw(@is_all_projects.to_json) %>;
+
+  // ログインユーザーの情報を取得する
+  window.UserId = <%= raw(@user_id.to_json)%>;
   
 </script>
 
