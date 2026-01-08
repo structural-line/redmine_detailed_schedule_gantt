@@ -195,7 +195,7 @@ class IssuesSaveHandler {
       // 作業内容のバリデーション
       case 'description':
         if( s.length > 255) {
-          alert("作業内容（説明）は255文字以内にしてください");
+          alert("説明は255文字以内にしてください");
           return false;
         } 
         break;
