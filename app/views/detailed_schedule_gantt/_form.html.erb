@@ -82,8 +82,8 @@
     <%# 1か月進む または、戻るボタン %>
     <p class="contextual">
       <span>
-        <%= link_to_previous_month(@gantt.year_from, @gantt.month_from, accesskey: accesskey(:previous)) %> |
-        <%= link_to_next_month(@gantt.year_from, @gantt.month_from, accesskey: accesskey(:next)) %>
+        <%= link_to_previous_month(@gantt.year_from, @gantt.month_from, accesskey: accesskey(:previous), onclick: "if (window.editModeManager && !window.editModeManager.getIsEditMode()) { window.onbeforeunload = null; } return true;") %> |
+        <%= link_to_next_month(@gantt.year_from, @gantt.month_from, accesskey: accesskey(:next), onclick: "if (window.editModeManager && !window.editModeManager.getIsEditMode()) { window.onbeforeunload = null; } return true;") %>
       </span>
     </p>
 
