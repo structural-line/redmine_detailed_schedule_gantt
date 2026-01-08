@@ -42,7 +42,6 @@ class HeaderGenerator {
       { label: '題名', rowspan: 3 },
       { label: '作業内容（説明）', rowspan: 3 },
       { label: '担当者', rowspan: 3 },
-      { label: 'ステータス', rowspan: 3 },
       { label: '優先度', rowspan: 3 },
       { label: '進捗率 %', rowspan: 3 },
       { label: '見積工数', rowspan: 3 },

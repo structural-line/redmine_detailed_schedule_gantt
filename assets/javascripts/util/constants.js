@@ -6,7 +6,7 @@
 // 定数定義
 const CONSTANTS = {
   // 静的カラムの幅設定
-  STATIC_COLUMN_WIDTHS: [0, 0, 0, 100, 200, 200, 100, 100, 100, 60, 60, 60, 50],
+  STATIC_COLUMN_WIDTHS: [0, 0, 0, 100, 200, 200, 100, 100, 60, 60, 60, 50],
 
   // 日付カラムの幅
   DAY_COLUMN_WIDTH: 28,
@@ -19,15 +19,14 @@ const CONSTANTS = {
   COL_SUBJECT: 4,
   COL_DESCRIPTION: 5,
   COL_ASSIGNED_TO: 6,
-  COL_STATUS: 7,
-  COL_PRIORITY: 8,
-  COL_DONE_RATIO: 9,
-  COL_ESTIMATED_DAYS: 10,
-  COL_SCHDULE_DAYS: 11,
-  COL_CHECK_DAYS: 12,
+  COL_PRIORITY: 7,
+  COL_DONE_RATIO: 8,
+  COL_ESTIMATED_DAYS: 9,
+  COL_SCHDULE_DAYS: 10,
+  COL_CHECK_DAYS: 11,
 
   // 日付カラムの開始インデックス（静的カラムの後）
-  COL_FIRST_DAY: 13,
+  COL_FIRST_DAY: 12,
 
   // 祝日 MM-DD 形式　背景色をグレーにするのと、休日入力不可オプションに使用
   // 祝日に変更があった場合はリストを更新する必要あり

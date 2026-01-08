@@ -53,8 +53,10 @@ class ReloadManager {
     }
 
     // ----- 1日の合計工数行を作成-----
-    // 全てのユーザーのひな型となる行データを作成
-    const tallyRows = (window.allUsers || []).map(user => ({
+    // 表示するユーザーを決定（全プロジェクト表示の場合は全ユーザー、そうでない場合はプロジェクトメンバーのみ）
+    const displayUsers = window.isAllProjects ? (window.allUsers || []) : (window.projectMembers || []);
+    // ユーザーのひな型となる行データを作成
+    const tallyRows = displayUsers.map(user => ({
       id: null,
       lock_version: null,
       category_id: '-',
@@ -110,8 +112,10 @@ class ReloadManager {
     }
 
     // ----- 1日の合計工数行を作成-----
-    // 全てのユーザーのひな型となる行データを作成
-    const tallyRows = (window.allUsers || []).map(user => ({
+    // 表示するユーザーを決定（全プロジェクト表示の場合は全ユーザー、そうでない場合はプロジェクトメンバーのみ）
+    const displayUsers = window.isAllProjects ? (window.allUsers || []) : (window.projectMembers || []);
+    // ユーザーのひな型となる行データを作成
+    const tallyRows = displayUsers.map(user => ({
       id: null,
       lock_version: null,
       category_id: '-',

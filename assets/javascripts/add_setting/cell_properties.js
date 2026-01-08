@@ -78,34 +78,11 @@ class CellProperties {
           td.style.textAlign = matchedUser ? '' : 'center';
           // 該当issueのassignable_usersから選択肢を作成
           issue?.assignable_users?.forEach(u => {
-            opts[u.id] = `${u.lastname}${u.firstname}`;
+            opts[u.id] = `${u.lastname} ${u.firstname}`;
           });
         }
       }
 
-    }
-
-    // ==============================
-    // ステータスカラム
-    // ==============================
-    const statusCol = this.hotMain.propToCol('status_id');
-    if (col === statusCol) {
-      // プロジェクト管理行またはマイルストーン行なら読み取り専用
-      if (rowData?.is_project_control_row || rowData?.is_milestone_row) cellProperties.readOnly = true;
-
-      // レンダーを設定する
-      cellProperties.renderer = (instance, td, row, col, prop, value, cellProperties) => {
-        td = this.setOmission(td); // 文字が行からはみ出す場合は省略表示する
-        td = this.setBackGoundColor(td, rowData);
-        if (isProjectRow || isMilestoneRow) {
-          this.setNonDisplay(td, rowData);
-        } else {
-          // status_idからstatus名を取得
-          const matchedStatus = window.statuses?.find(s => String(s.id) === String(value));
-          td.innerText = matchedStatus ? matchedStatus.name : '-';
-          td.style.textAlign = matchedStatus ? '' : 'center';
-        }
-      };
     }
 
     // ==============================
@@ -375,23 +352,6 @@ class CellProperties {
           opts[u.id] = `${u.lastname} ${u.firstname}`;
         });
         td = this.setOmission(td);
-      };
-    }
-
-    // ==============================
-    // ステータスカラム
-    // ==============================
-    const statusCol = this.hotFooter.propToCol('status_id');
-    if (col === statusCol) {
-      cellProperties.readOnly = true;
-
-      // レンダーを設定する
-      cellProperties.renderer = (instance, td, row, col, prop, value, cellProperties) => {
-        td = this.setOmission(td);
-        // status_idからstatus名を取得
-        const matchedStatus = window.statuses?.find(s => String(s.id) === String(value));
-        td.innerText = matchedStatus ? matchedStatus.name : '-';
-        td.style.textAlign = matchedStatus ? '' : 'center';
       };
     }
 

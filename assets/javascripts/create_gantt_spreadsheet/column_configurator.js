@@ -37,7 +37,6 @@ class ColumnConfigurator {
       { data: 'subject' },
       { data: 'description' },
       { data: 'assigned_to_id', editor: 'select' },
-      { data: 'status_id', readOnly: true },
       { data: 'priority_id', editor: 'select' },
       { data: 'done_ratio', editor: 'select', selectOptions: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100] },
       { data: 'estimated_days', type: 'numeric' },

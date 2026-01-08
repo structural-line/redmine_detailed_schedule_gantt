@@ -53,6 +53,13 @@
   // ]
   window.allUsers = <%= raw(@all_users.to_json) %>;
 
+  // プロジェクトメンバーのIDと名前が入ったオブジェクトを作成（プロジェクトが指定されている場合のみ）
+  // [
+  //    { id: 1, firstname: 'Redmine', lastname: 'Admin' },
+  //    { id: 2, firstname: 'ストラク', lastname: '太郎' },
+  // ]
+  window.projectMembers = <%= raw(@project_members.to_json) %>;
+
   // ユーザー毎の一日の合計工数が入ったオブジェクトを作成
   // [
   //    {id: 1, user_id: 1, schedule_date: '2025-10-15', total_man_days: '1.5'},
@@ -73,13 +80,6 @@
   //    {id: 2, project_id: 47, name: 'テスト機能', description: '', effective_date: null, …}
   //  ]
   window.versions = <%= raw(@versions.to_json) %>;
-
-  // statusの情報が入ったオブジェクトを作成
-  //  [
-  //    {id: 1, name: '新規', position: 1, is_closed: false, …}
-  //    {id: 2, name: '進行中', position: 2, is_closed: false, …}
-  //  ]
-  window.statuses = <%= raw(@statuses.to_json) %>;
 
   // priorityの情報が入ったオブジェクトを作成
   //  [

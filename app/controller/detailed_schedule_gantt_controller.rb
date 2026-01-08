@@ -509,6 +509,17 @@ class DetailedScheduleGanttController < ApplicationController
                       .order(:lastname, :firstname)
                       .map { |u| { id: u.id, firstname: u.firstname, lastname: u.lastname } }
 
+    # プロジェクトメンバーの一覧を取得（プロジェクトが指定されている場合のみ）
+    if @project
+      @project_members = @project.users
+                                  .active
+                                  .select(:id, :firstname, :lastname)
+                                  .order(:lastname, :firstname)
+                                  .map { |u| { id: u.id, firstname: u.firstname, lastname: u.lastname } }
+    else
+      @project_members = []
+    end
+
     @user_daily_schedules = UserDailySchedule.all
 
     user_id = User.current.id
@@ -527,10 +538,6 @@ class DetailedScheduleGanttController < ApplicationController
     else
       @versions = Version.all
     end
-
-    # 全ステータスをposition順（表示順）で取得
-    # :positionはRedmineのIssueStatusモデルのカラムで、表示順を制御するためのもの
-    @statuses = IssueStatus.all.order(:position)
     
     # 全優先度をposition順（表示順）で取得
     # :positionはRedmineのIssuePriorityモデルのカラムで、表示順を制御するためのもの
