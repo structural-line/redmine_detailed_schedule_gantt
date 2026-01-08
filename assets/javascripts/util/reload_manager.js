@@ -176,7 +176,23 @@ class ReloadManager {
       milestoneRows.push(row);
     });
 
-    const rowsData = projectControlRows.concat(milestoneRows).concat(issueRows);
+    // ----- プロジェクトごとにマイルストーン行とイシュー行をグループ化 -----
+    const rowsData = [];
+    data.projects.forEach(project => {
+      // プロジェクト管理行を追加
+      const projectControlRow = projectControlRows.find(row => row.project_id === project.id);
+      if (projectControlRow) {
+        rowsData.push(projectControlRow);
+      }
+
+      // そのプロジェクトのマイルストーン行を追加
+      const projectMilestoneRows = milestoneRows.filter(row => row.project_id === project.id);
+      rowsData.push(...projectMilestoneRows);
+
+      // そのプロジェクトのイシュー行を追加
+      const projectIssueRows = issueRows.filter(row => row.project_id === project.id);
+      rowsData.push(...projectIssueRows);
+    });
     const mergeCells = this.projectControlRowsGenerator
         .getMergeCells(rowsData)
         .concat(this.milestoneRowsGenerator.getMergeCells(rowsData));
