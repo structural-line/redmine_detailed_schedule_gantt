@@ -5,6 +5,7 @@
 - Redmine Detailed Schedule Gantt Plugin は、Redmine における「**小日程計画（詳細スケジュール）**」のガントチャートプラグインです
 - エクセルのようなグリッド形式のため、タスクの作成・変更・進捗管理を簡単に行うことができます
 - 小日程計画のため、その日に誰が何をどのくらい作業するかの予定を組むことができ、正確な予実管理が可能になります
+- 本プラグインはRedmine 6に対応しています。
 
 ## 機能一覧
 - 小日程計画粒度のガントチャート機能
@@ -39,6 +40,34 @@
 - マイグレーションをロールバックする方法。アンインストールする際等に使用  
   `bundle exec rake redmine:plugins:migrate NAME=redmine_detailed_schedule_gantt VERSION=0`
 
+## Dockerで起動する方法
+
+- 以下のようにDocker composeを起動します。
+
+```
+docker compose up -d
+```
+
+- 以下のようにマイグレーションを実施します。
+
+```
+docker compose exec redmine bash
+# rails credentials:edit
+# bundle exec rake redmine:plugins:migrate
+```
+
+- 以下のURLにアクセスします。
+
+http://localhost:3000/
+
+初期起動時の管理者ログイン情報は
+```
+ログインid: admin
+パスワード: admin
+```
+です。
+
+
 ## チュートリアル
 0. 既にプロジェクトとチケットが作成されている場合はすぐに小日程計画が立てられます 4. に進んでください
 
@@ -54,7 +83,7 @@
 
 4. プロジェクトに全体スケジュールを設定する
 
-    - 機能名列、1行目のリンク（サンプルプロジェクトの部分）をクリックする
+    - 題名列、1行目のリンク（サンプルプロジェクトの部分）をクリックする
 ![プロジェクト管理](image/README/project_control.png)
 
     - 開始日と期日と見積工数（人日）を設定する

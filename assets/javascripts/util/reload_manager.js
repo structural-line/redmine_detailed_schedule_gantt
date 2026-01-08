@@ -53,15 +53,20 @@ class ReloadManager {
     }
 
     // ----- 1日の合計工数行を作成-----
-    // 全てのユーザーのひな型となる行データを作成
-    const tallyRows = (window.allUsers || []).map(user => ({
+    // 表示するユーザーを決定（全プロジェクト表示の場合は全ユーザー、そうでない場合はプロジェクトメンバーのみ）
+    const displayUsers = window.isAllProjects ? (window.allUsers || []) : (window.projectMembers || []);
+    // ユーザーのひな型となる行データを作成
+    const tallyRows = displayUsers.map(user => ({
       id: null,
       lock_version: null,
       category_id: '-',
       version_id: '-',
       assigned_to_id: user.id,
+      tracker_id: null,
       subject: '工数管理',
       description: '1日の合計工数',
+      status_id: null,
+      priority_id: null,
       done_ratio: '-',
       is_tally_row: true,
       estimated_days: '-',
@@ -107,15 +112,20 @@ class ReloadManager {
     }
 
     // ----- 1日の合計工数行を作成-----
-    // 全てのユーザーのひな型となる行データを作成
-    const tallyRows = (window.allUsers || []).map(user => ({
+    // 表示するユーザーを決定（全プロジェクト表示の場合は全ユーザー、そうでない場合はプロジェクトメンバーのみ）
+    const displayUsers = window.isAllProjects ? (window.allUsers || []) : (window.projectMembers || []);
+    // ユーザーのひな型となる行データを作成
+    const tallyRows = displayUsers.map(user => ({
       id: null,
       lock_version: null,
       category_id: '-',
       version_id: '-',
       assigned_to_id: user.id,
+      tracker_id: null,
       subject: '工数管理',
       description: '1日の合計工数',
+      status_id: null,
+      priority_id: null,
       done_ratio: '-',
       is_tally_row: true,
       estimated_days: '-',
@@ -176,7 +186,23 @@ class ReloadManager {
       milestoneRows.push(row);
     });
 
-    const rowsData = projectControlRows.concat(milestoneRows).concat(issueRows);
+    // ----- プロジェクトごとにマイルストーン行とイシュー行をグループ化 -----
+    const rowsData = [];
+    data.projects.forEach(project => {
+      // プロジェクト管理行を追加
+      const projectControlRow = projectControlRows.find(row => row.project_id === project.id);
+      if (projectControlRow) {
+        rowsData.push(projectControlRow);
+      }
+
+      // そのプロジェクトのマイルストーン行を追加
+      const projectMilestoneRows = milestoneRows.filter(row => row.project_id === project.id);
+      rowsData.push(...projectMilestoneRows);
+
+      // そのプロジェクトのイシュー行を追加
+      const projectIssueRows = issueRows.filter(row => row.project_id === project.id);
+      rowsData.push(...projectIssueRows);
+    });
     const mergeCells = this.projectControlRowsGenerator
         .getMergeCells(rowsData)
         .concat(this.milestoneRowsGenerator.getMergeCells(rowsData));
