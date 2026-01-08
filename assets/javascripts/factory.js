@@ -91,6 +91,8 @@ $(document).ready(async function() {
   // 編集モードをセットアップ
   const editModeManager = new window.EditModeManager(hotMain, pasteHandler, reloadManager, sortNumberUpdater);
   editModeManager.initialize();
+  // グローバルに公開（リンククリック時のbeforeunload制御で使用）
+  window.editModeManager = editModeManager;
 
   // 更新機能をセットアップ
   const issuesSaveHandler = new window.IssuesSaveHandler(hotMain, reloadManager);

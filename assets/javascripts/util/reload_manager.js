@@ -86,7 +86,49 @@ class ReloadManager {
       data: tallyRows
     })
     this.hotFooter.render();
+
+    // プロジェクト管理行の合計工数カラム（schedule_days、check_days）を更新
+    this.updateProjectControlRows(data.projects);
+
     this.hideLoading();
+  }
+
+  /**
+   * プロジェクト管理行の合計工数カラム（schedule_days、check_days）を更新する
+   * @param {Array} projects プロジェクトデータの配列
+   */
+  updateProjectControlRows(projects) {
+    if (!projects || projects.length === 0) return;
+
+    const rowCount = this.hotMain.countRows();
+    const updates = [];
+
+    // 各プロジェクトについて、対応するプロジェクト管理行を見つけて更新
+    projects.forEach(project => {
+      for (let row = 0; row < rowCount; row++) {
+        const rowData = this.hotMain.getSourceDataAtRow(row);
+        if (rowData?.is_project_control_row && rowData?.project_id === project.id) {
+          // schedule_daysとcheck_daysを更新
+          if (rowData.schedule_days !== project.schedule_days) {
+            updates.push([row, 'schedule_days', project.schedule_days]);
+          }
+          if (rowData.check_days !== project.check_days) {
+            updates.push([row, 'check_days', project.check_days]);
+          }
+          break; // 見つかったら次のプロジェクトへ
+        }
+      }
+    });
+
+    // バッチ更新でまとめて更新
+    if (updates.length > 0) {
+      this.hotMain.batch(() => {
+        updates.forEach(([row, prop, value]) => {
+          this.hotMain.setDataAtRowProp(row, prop, value, 'server calculate value');
+        });
+      });
+      this.hotMain.render();
+    }
   }
 
   // 最新のissueと1日の合計工数を取得してHandsontableのセルの値を更新する
