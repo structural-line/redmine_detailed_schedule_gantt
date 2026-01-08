@@ -527,6 +527,17 @@ class DetailedScheduleGanttController < ApplicationController
     else
       @versions = Version.all
     end
+
+    # 全ステータスをposition順（表示順）で取得
+    # :positionはRedmineのIssueStatusモデルのカラムで、表示順を制御するためのもの
+    @statuses = IssueStatus.all.order(:position)
+    
+    # 全優先度をposition順（表示順）で取得
+    # :positionはRedmineのIssuePriorityモデルのカラムで、表示順を制御するためのもの
+    @priorities = IssuePriority.all.order(:position)
+    
+    # 全トラッカーを取得
+    @trackers = Tracker.all.order(:position)
   end
 
   # 共通のレンダリング処理

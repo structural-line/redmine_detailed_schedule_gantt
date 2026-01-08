@@ -50,73 +50,6 @@ class CellProperties {
     const isMilestoneRow = rowData?.is_milestone_row;
 
     // ==============================
-    // マイルストーンカラム
-    // ==============================
-    const milestoneCol = this.hotMain.propToCol('version_id');
-    if (col == milestoneCol) {
-      // プロジェクト管理行またはマイルストーン行なら読み取り専用
-      if (rowData?.is_project_control_row || rowData?.is_milestone_row) cellProperties.readOnly = true;
-
-      const opts = { '' : '-' };
-      cellProperties.selectOptions = opts;
-      const issue = window.issueArray?.find(i => i.id === rowData?.id);
-      const project = window.projects?.find(i => i.id === rowData?.project_id);
-      const projectId = project?.id;
-      const versions = window.versions;
-      
-      // プロジェクトIDが一致するマイルストーンが見つかった場合はそのマイルストーンを選択しに追加する
-      versions.forEach(v => {
-        if ((v.project_id === projectId || v.sharing !== 'none') && v.status === 'open') {
-          opts[v.id] = v.name;
-        }
-      });
-
-      // レンダーを設定する
-      cellProperties.renderer = (instance, td, row, col, prop, value, cellProperties) => {
-        td = this.setOmission(td); // 文字が行からはみ出す場合は省略表示する
-        td = this.setBackGoundColor(td, rowData);
-        if (isProjectRow || isMilestoneRow) {
-          this.setNonDisplay(td, rowData);
-        } else {
-          // マイルストーンがチケットに紐づいていた場合は表示する
-          const version = issue?.shared_version?.find(v => v.id === parseInt(value, 10));
-          td.innerText = version ? version.name : '-';
-          td.style.textAlign = version ? '' : 'center';
-        }
-      };
-    }
-
-    // ==============================
-    // カテゴリーカラム
-    // ==============================
-    const categoryCol = this.hotMain.propToCol('category_id');
-    if (col === categoryCol) {
-      // プロジェクト管理行またはマイルストーン行なら読み取り専用
-      if (rowData?.is_project_control_row || rowData?.is_milestone_row) cellProperties.readOnly = true;
-
-      const opts = { '' : '-' };
-      const issue = window.issueArray?.find(i => i.id === rowData?.id);
-      cellProperties.selectOptions = opts;
-
-      // レンダーを設定する
-      cellProperties.renderer = (instance, td, row, col, prop, value, cellProperties)  => {
-        td = this.setOmission(td); // 文字が行からはみ出す場合は省略表示する
-        td = this.setBackGoundColor(td, rowData);
-        if (isProjectRow || isMilestoneRow) {
-          this.setNonDisplay(td, rowData);
-        } else {
-          const category = issue?.available_categories?.find(c => c.id === parseInt(value, 10));
-          td.innerText = category ? category.name : '-';
-          td.style.textAlign = category ? '' : 'center';
-          // 該当issueの available_categories から選択肢を作成
-          issue?.available_categories?.forEach(c => {
-            opts[c.id] = `${c.name}`;
-          });
-        }
-      };
-    }
-
-    // ==============================
     // 担当者カラム
     // ==============================
     const assignCol = this.hotMain.propToCol('assigned_to_id');
@@ -145,7 +78,7 @@ class CellProperties {
           td.style.textAlign = matchedUser ? '' : 'center';
           // 該当issueのassignable_usersから選択肢を作成
           issue?.assignable_users?.forEach(u => {
-            opts[u.id] = `${u.firstname} ${u.lastname}`;
+            opts[u.id] = `${u.lastname}${u.firstname}`;
           });
         }
       }
@@ -153,7 +86,94 @@ class CellProperties {
     }
 
     // ==============================
-    // 機能名カラム
+    // ステータスカラム
+    // ==============================
+    const statusCol = this.hotMain.propToCol('status_id');
+    if (col === statusCol) {
+      // プロジェクト管理行またはマイルストーン行なら読み取り専用
+      if (rowData?.is_project_control_row || rowData?.is_milestone_row) cellProperties.readOnly = true;
+
+      // レンダーを設定する
+      cellProperties.renderer = (instance, td, row, col, prop, value, cellProperties) => {
+        td = this.setOmission(td); // 文字が行からはみ出す場合は省略表示する
+        td = this.setBackGoundColor(td, rowData);
+        if (isProjectRow || isMilestoneRow) {
+          this.setNonDisplay(td, rowData);
+        } else {
+          // status_idからstatus名を取得
+          const matchedStatus = window.statuses?.find(s => String(s.id) === String(value));
+          td.innerText = matchedStatus ? matchedStatus.name : '-';
+          td.style.textAlign = matchedStatus ? '' : 'center';
+        }
+      };
+    }
+
+    // ==============================
+    // 優先度カラム
+    // ==============================
+    const priorityCol = this.hotMain.propToCol('priority_id');
+    if (col === priorityCol) {
+      // プロジェクト管理行またはマイルストーン行なら読み取り専用
+      if (rowData?.is_project_control_row || rowData?.is_milestone_row) cellProperties.readOnly = true;
+
+      // Selectエディタの選択肢を作成
+      const priorityOptions = { '': '-' };
+      if (window.priorities) {
+        window.priorities.forEach(priority => {
+          priorityOptions[priority.id] = priority.name;
+        });
+      }
+      cellProperties.selectOptions = priorityOptions;
+
+      // レンダーを設定する
+      cellProperties.renderer = (instance, td, row, col, prop, value, cellProperties) => {
+        td = this.setOmission(td); // 文字が行からはみ出す場合は省略表示する
+        td = this.setBackGoundColor(td, rowData);
+        if (isProjectRow || isMilestoneRow) {
+          this.setNonDisplay(td, rowData);
+        } else {
+          // priority_idからpriority名を取得
+          const matchedPriority = window.priorities?.find(p => String(p.id) === String(value));
+          td.innerText = matchedPriority ? matchedPriority.name : '-';
+          td.style.textAlign = matchedPriority ? '' : 'center';
+        }
+      };
+    }
+
+    // ==============================
+    // トラッカーカラム
+    // ==============================
+    const trackerCol = this.hotMain.propToCol('tracker_id');
+    if (col === trackerCol) {
+      // プロジェクト管理行またはマイルストーン行なら読み取り専用
+      if (rowData?.is_project_control_row || rowData?.is_milestone_row) cellProperties.readOnly = true;
+
+      // Selectエディタの選択肢を作成
+      const trackerOptions = { '': '-' };
+      if (window.trackers) {
+        window.trackers.forEach(tracker => {
+          trackerOptions[tracker.id] = tracker.name;
+        });
+      }
+      cellProperties.selectOptions = trackerOptions;
+
+      // レンダーを設定する
+      cellProperties.renderer = (instance, td, row, col, prop, value, cellProperties) => {
+        td = this.setOmission(td); // 文字が行からはみ出す場合は省略表示する
+        td = this.setBackGoundColor(td, rowData);
+        if (isProjectRow || isMilestoneRow) {
+          this.setNonDisplay(td, rowData);
+        } else {
+          // tracker_idからtracker名を取得
+          const matchedTracker = window.trackers?.find(t => String(t.id) === String(value));
+          td.innerText = matchedTracker ? matchedTracker.name : '-';
+          td.style.textAlign = matchedTracker ? '' : 'center';
+        }
+      };
+    }
+
+    // ==============================
+    // 題名カラム
     // ==============================
     const subjectCol = this.hotMain.propToCol('subject');
     if (col === subjectCol) {
@@ -334,32 +354,6 @@ class CellProperties {
  
 
     // ==============================
-    // マイルストーンカラム
-    // ==============================
-    const milestoneCol = this.hotFooter.propToCol('version_id');
-    if (col == milestoneCol) {
-      cellProperties.readOnly = true;
-
-      // レンダーを設定する
-      cellProperties.renderer = (instance, td, row, col, prop, value, cellProperties)  => {
-        this.setNonDisplay(td, rowData);
-      }
-    }
-
-    // ==============================
-    // カテゴリーカラム
-    // ==============================
-    const categoryCol = this.hotFooter.propToCol('category_id');
-    if (col === categoryCol) {
-      cellProperties.readOnly = true;
-
-      // レンダーを設定する
-      cellProperties.renderer = (instance, td, row, col, prop, value, cellProperties)  => {
-        this.setNonDisplay(td, rowData);
-      };
-    }
-
-    // ==============================
     // 担当者カラム
     // ==============================
     const assignCol = this.hotFooter.propToCol('assigned_to_id');
@@ -378,14 +372,65 @@ class CellProperties {
         td.style.textAlign = matchedUser ? '' : 'center';
         // 該当issueのassignable_usersから選択肢を作成
         issue?.assignable_users?.forEach(u => {
-          opts[u.id] = `${u.firstname} ${u.lastname}`;
+          opts[u.id] = `${u.lastname} ${u.firstname}`;
         });
         td = this.setOmission(td);
       };
     }
 
     // ==============================
-    // 機能名カラム
+    // ステータスカラム
+    // ==============================
+    const statusCol = this.hotFooter.propToCol('status_id');
+    if (col === statusCol) {
+      cellProperties.readOnly = true;
+
+      // レンダーを設定する
+      cellProperties.renderer = (instance, td, row, col, prop, value, cellProperties) => {
+        td = this.setOmission(td);
+        // status_idからstatus名を取得
+        const matchedStatus = window.statuses?.find(s => String(s.id) === String(value));
+        td.innerText = matchedStatus ? matchedStatus.name : '-';
+        td.style.textAlign = matchedStatus ? '' : 'center';
+      };
+    }
+
+    // ==============================
+    // 優先度カラム
+    // ==============================
+    const priorityCol = this.hotFooter.propToCol('priority_id');
+    if (col === priorityCol) {
+      cellProperties.readOnly = true;
+
+      // レンダーを設定する
+      cellProperties.renderer = (instance, td, row, col, prop, value, cellProperties) => {
+        td = this.setOmission(td);
+        // priority_idからpriority名を取得
+        const matchedPriority = window.priorities?.find(p => String(p.id) === String(value));
+        td.innerText = matchedPriority ? matchedPriority.name : '-';
+        td.style.textAlign = matchedPriority ? '' : 'center';
+      };
+    }
+
+    // ==============================
+    // トラッカーカラム
+    // ==============================
+    const trackerCol = this.hotFooter.propToCol('tracker_id');
+    if (col === trackerCol) {
+      cellProperties.readOnly = true;
+
+      // レンダーを設定する
+      cellProperties.renderer = (instance, td, row, col, prop, value, cellProperties) => {
+        td = this.setOmission(td);
+        // tracker_idからtracker名を取得
+        const matchedTracker = window.trackers?.find(t => String(t.id) === String(value));
+        td.innerText = matchedTracker ? matchedTracker.name : '-';
+        td.style.textAlign = matchedTracker ? '' : 'center';
+      };
+    }
+
+    // ==============================
+    // 題名カラム
     // ==============================
     const subjectCol = this.hotFooter.propToCol('subject');
     if (col === subjectCol) {

@@ -180,14 +180,14 @@ class IssuesSaveHandler {
         }
         break;
 
-      // 機能名のバリデーション
+      // 題名のバリデーション
       case 'subject':
         if (s == null || s === '') {
-          alert("機能名には空文字を入力できません");
+          alert("題名には空文字を入力できません");
           return false;
         }
         if(s.length > 255) {
-          alert("機能名は255文字以内にしてください");
+          alert("題名は255文字以内にしてください");
           return false;
         } 
         break;
