@@ -1,0 +1,46 @@
+services:
+  db:
+    image: postgres:15
+    container_name: redmine-db
+    environment:
+      POSTGRES_DB: redmine
+      POSTGRES_USER: redmine
+      POSTGRES_PASSWORD: strongpassword
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: redmine-mailhog
+    ports:
+      - "8025:8025"   # Web UI
+      - "1025:1025"   # SMTP
+
+  redmine:
+    image: redmine:6
+    container_name: redmine
+    depends_on:
+      - db
+      - mailhog
+    ports:
+      - "3000:3000"
+    environment:
+      REDMINE_DB_POSTGRES: db
+      REDMINE_DB_DATABASE: redmine
+      REDMINE_DB_USERNAME: redmine
+      REDMINE_DB_PASSWORD: strongpassword
+      REDMINE_SECRET_KEY_BASE: supersecretkey
+      REDMINE_LANG: ja
+
+      REDMINE_EMAIL_DELIVERY_METHOD: smtp
+      REDMINE_SMTP_HOST: mailhog
+      REDMINE_SMTP_PORT: 1025
+      REDMINE_SMTP_DOMAIN: example.com
+      REDMINE_SMTP_AUTHENTICATION: none
+    volumes:
+      - redmine-files:/usr/src/redmine/files
+      - ./:/usr/src/redmine/plugins/redmine_detailed_schedule_gantt
+
+volumes:
+  db-data:
+  redmine-files:
