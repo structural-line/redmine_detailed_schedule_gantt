@@ -25,8 +25,6 @@ class RowDeleter {
     const endRow   = Math.max(select[0], select[2]);
     const count    = endRow - startRow + 1;
 
-    if (!window.confirm(`本当に選択したチケット削除しますか？この操作はロールバックできません。`)) return;
-
     /**
      * 削除対象の行データ
      * [
@@ -34,11 +32,33 @@ class RowDeleter {
      * ]
      */ 
     const rows = [];
+    const invalidRows = []; // 削除できない行（プロジェクト管理行、マイルストーン行）
 
-    // 削除対象の行を取得
+    // 削除対象の行を取得し、プロジェクト管理行とマイルストーン行をチェック
     for (let i = startRow; i <= endRow; i++) {
-      rows.push(this.hotMain.getSourceDataAtRow(i));
+      const rowData = this.hotMain.getSourceDataAtRow(i);
+      
+      // プロジェクト管理行またはマイルストーン行の場合は削除不可
+      if (rowData?.is_project_control_row || rowData?.is_milestone_row) {
+        invalidRows.push(rowData);
+        continue;
+      }
+      
+      rows.push(rowData);
     }
+
+    // プロジェクト管理行またはマイルストーン行が含まれている場合はエラー
+    if (invalidRows.length > 0) {
+      alert(`チケット以外は削除できません`);
+      return;
+    }
+
+    // 削除対象がなければ終了
+    if (rows.length === 0) {
+      return;
+    }
+
+    if (!window.confirm(`本当に選択したチケット削除しますか？この操作はロールバックできません。`)) return;
 
     const payload = {
       issues: rows
@@ -47,7 +67,9 @@ class RowDeleter {
     try {
       const data = await this.sendRequest.send(payload);
       console.log('削除されたチケットID data.results：', data.results);
-      this.hotMain.alter('remove_row', startRow, count);
+      // 削除対象の行数を実際に削除する行数に合わせる
+      const actualCount = rows.length;
+      this.hotMain.alter('remove_row', startRow, actualCount);
     }catch (err) {
       console.error('delete_selected_issues アクション 失敗:', err);
       let message = `削除に失敗しました (status: ${err.status ?? 'N/A'})`;
