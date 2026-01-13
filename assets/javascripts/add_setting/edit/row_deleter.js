@@ -49,7 +49,7 @@ class RowDeleter {
 
     // プロジェクト管理行またはマイルストーン行が含まれている場合はエラー
     if (invalidRows.length > 0) {
-      alert(`チケット以外は削除できません`);
+      alert(`チケット以外は削除できません。`);
       return;
     }
 

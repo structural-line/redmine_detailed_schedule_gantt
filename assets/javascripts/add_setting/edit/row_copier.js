@@ -32,6 +32,23 @@ class RowCopier {
     const endRow   = Math.max(sel[0], sel[2]); // 下端の行番号を取得（上下のどちらからドラッグしても正しく動く）
     const rowsToCopy = endRow - startRow + 1; // 何行コピーするか計算
 
+    // 選択範囲にプロジェクト管理行やマイルストーン行が含まれていないかチェック
+    for (let i = 0; i < rowsToCopy; i++) {
+      const srcRow = startRow + i;
+      const rowData = this.hotMain.getSourceDataAtRow(srcRow);
+      if (rowData?.is_project_control_row || rowData?.is_milestone_row) {
+        alert('チケット以外コピーできません。');
+        return;
+      }
+    }
+
+    // 追加先（endRowの下）がプロジェクト管理行やマイルストーン行でないかチェック
+    const nextRowData = this.hotMain.getSourceDataAtRow(endRow + 1);
+    if (nextRowData?.is_project_control_row || nextRowData?.is_milestone_row) {
+      alert('チケット以外コピーできません。');
+      return;
+    }
+
     const issueIds = []; // issue IDを入れた配列
 
     // 選択した行を1行ずつループ
