@@ -1,6 +1,6 @@
 services:
   db:
-    image: postgres:15
+    image: postgres:15.20
     container_name: redmine-db
     environment:
       POSTGRES_DB: redmine
